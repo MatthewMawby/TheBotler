@@ -1,0 +1,20 @@
+{
+  "name": "the_botler",
+  "version": "1.0.0",
+  "description": "A facebook chat bot to serve as your butler",
+  "main": "botler.js",
+  "scripts": {
+    "start" : "node botler.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatthewMawby/TheBotler.git"
+  },
+  "author": "Matthew Mawby",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MatthewMawby/TheBotler/issues"
+  },
+  "homepage": "https://github.com/MatthewMawby/TheBotler#readme"
+}
