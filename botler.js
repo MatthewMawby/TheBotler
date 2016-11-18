@@ -42,7 +42,22 @@ function tictac(cmd, api, thread){
     }
     else if (cmd[1] == "-play")
     {
-        addLetter(cmd[2], cmd[3], cmd[4], api, thread);
+        if (cmd[2] == "O" || cmd[2] == "X")
+        {
+            if ((cmd[3] > -1 && cmd[3] < 3) && (cmd[4] > -1 && cmd[4] < 3))
+            {
+                addLetter(cmd[2], cmd[3], cmd[4], api, thread);
+            }
+            else
+            {
+                api.sendMessage("```\nPlease specify a location thats on the board...", thread);
+            }
+        }
+        else
+        {
+            api.sendMessage("```\nThe only valid letters are 'O' and 'X'", thread);
+        }
+
     }
 
     else if (cmd[1] == "-clear")
@@ -70,6 +85,11 @@ function addLetter(letter, xPos, yPos, api, thread)
     var new_row = row.join(" ");
     board[2-yPos] = new_row;
     printboard(api, thread);
+    var checkwin = checkSolution(api, thread);
+    if (checkwin)
+    {
+        clear(api, thread);
+    }
 }
 
 function clear(api, thread)
@@ -79,6 +99,51 @@ function clear(api, thread)
         board[i] = "- - -";
     }
     api.sendMessage("```\n Board Cleared! \n```", thread);
+}
+
+function checkSolution(api, thread)
+{
+    var solBoard = new Array(3);
+    for (var i = 0; i < 3; i++)
+    {
+        var tmp = board[i].split(" ");
+        solBoard[i] = tmp;
+    }
+
+    //check rows & columns
+    for (var x = 0; x < solBoard.length; x++)
+    {
+        //check columns
+        if ((solBoard[0][x] == solBoard[1][x]) && (solBoard[0][x] == solBoard[2][x]) && solBoard[0][x] != "-")
+        {
+            var send = "```\nPlayer with character " + solBoard[0][x] + " wins!\n```";
+            api.sendMessage(send, thread);
+            return true;
+        }
+
+        //check rows
+        else if ((solBoard[x][0] == solBoard[x][1]) && (solBoard[x][0] == solBoard[x][2]) && solBoard[x][0] != "-")
+        {
+            var send = "```\nPlayer with character " + solBoard[x][0] + " wins!\n```";
+            api.sendMessage(send, thread);
+            return true;
+        }
+    }
+
+    //check diagonals
+    if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]))
+    {
+        var send = "```\nPlayer with character " + solBoard[0][0] + " wins!\n```";
+        api.sendMessage(send, thread);
+        return true;
+    }
+    else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]))
+    {
+        var send = "```\nPlayer with character " + solBoard[0][2] + " wins!\n```";
+        api.sendMessage(send, thread);
+        return true;
+    }
+    return false;
 }
 
 main();
