@@ -6,33 +6,45 @@ function main(){
         if(err) return console.error(err);
 
         api.listen(function callback(err, message){
-            var cmd = message.body.split(' ');
-            if (cmd[0]==".about")
-            {
-                api.sendMessage("Hello, I am a bot.", message.threadID);
-            }
-            else if (cmd[0]==".google")
-            {
-                var url = "https://lmgtfy.com/?q=";
-                if (cmd.length>1){
-                    url+=cmd[1];
-                }
-                for (var g = 2; g < cmd.length; g++)
-                {
-                    url = url+"+"+cmd[g];
-                }
-                api.sendMessage(url, message.threadID);
-            }
-            else if (cmd[0]==".tictac")
-            {
-                tictac(cmd, api, message.threadID);
-            }
-            else
-            {
-                api.sendMessage(message.body, message.threadID);
+            var args = message.body.split(' ');
+            switch (args[0].toLowerCase()){
+                case ".about":
+                    api.sendMessage("Hello, I am a bot.", message.threadID);
+                    break;
+
+                case ".google":
+                    var url = "https://lmgtfy.com/?q=";
+                    if (args.length>1){
+                        url+=args[1];
+                    }
+                    for (var g = 2; g < args.length; g++){
+                        url = url+"+"+args[g];
+                    }
+                    api.sendMessage(url, message.threadID);
+                    break;
+
+                case ".tictac":
+                    tictac(args, api, message.threadID);
+                    break;
+
+                case ".random":
+                    if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
+                    else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
+                    api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
+                    break;
+
+                case ".choose":
+                    if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
+                    var choice = randInt(1, args.length)
+                    api.sendMessage(args[choice], message.threadID);
+                    break;
             }
         });
     });
+}
+
+function randInt(min, max){
+    return Math.floor(Math.random() * (max-min+1))+min;
 }
 
 function tictac(cmd, api, thread){
@@ -131,13 +143,13 @@ function checkSolution(api, thread)
     }
 
     //check diagonals
-    if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]))
+    if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]) && (solBoard[1][1]!="-"))
     {
         var send = "```\nPlayer with character " + solBoard[0][0] + " wins!\n```";
         api.sendMessage(send, thread);
         return true;
     }
-    else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]))
+    else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]) && (solBoard[1][1]!="-"))
     {
         var send = "```\nPlayer with character " + solBoard[0][2] + " wins!\n```";
         api.sendMessage(send, thread);
