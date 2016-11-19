@@ -1,10 +1,13 @@
 var login = require("facebook-chat-api")
 var board = ['- - -','- - -','- - -']
+var moveCount = 0;
 
+//Logs in and receives commands
 function main(){
     login({email:"facebookbutlerbot@gmail.com", password: "butlerbot"}, function callback (err, api){
         if(err) return console.error(err);
 
+        //begin listening for messages
         api.listen(function callback(err, message){
             var args = message.body.split(' ');
             switch (args[0].toLowerCase()){
@@ -12,6 +15,7 @@ function main(){
                     api.sendMessage("Hello, I am a bot.", message.threadID);
                     break;
 
+                //constructs a let me google that for you link and sends it
                 case ".google":
                     var url = "https://lmgtfy.com/?q=";
                     if (args.length>1){
@@ -23,16 +27,19 @@ function main(){
                     api.sendMessage(url, message.threadID);
                     break;
 
+                //allows users to play tictactoe
                 case ".tictac":
                     tictac(args, api, message.threadID);
                     break;
 
+                //generates a random number within a certain range
                 case ".random":
                     if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
                     else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
                     api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
                     break;
 
+                //chooses a random value from a range of values given by users
                 case ".choose":
                     if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
                     var choice = randInt(1, args.length)
@@ -43,14 +50,20 @@ function main(){
     });
 }
 
+//chooses a random integer between min and max (inclusive)
 function randInt(min, max){
     return Math.floor(Math.random() * (max-min+1))+min;
 }
 
+//parses the flags and other arguments of the .tictac command
 function tictac(cmd, api, thread){
+
+    //if the -print flag is given, print the board
     if (cmd[1] == "-print"){
         printboard(api, thread);
     }
+
+    //if the -play flag is given, check for valid args and make the move
     else if (cmd[1] == "-play"){
         if (cmd[2] == "O" || cmd[2] == "X"){
             if ((cmd[3] > -1 && cmd[3] < 3) && (cmd[4] > -1 && cmd[4] < 3)){
@@ -63,14 +76,15 @@ function tictac(cmd, api, thread){
         else{
             api.sendMessage("```\nThe only valid letters are 'O' and 'X'", thread);
         }
-
     }
 
+    //clears the board
     else if (cmd[1] == "-clear"){
         clear(api, thread);
     }
 }
 
+//a function to print the tictactoe board
 function printboard(api, thread){
     var send = "``` \n";
     for (var c = 0; c < board.length; c++){
@@ -82,24 +96,36 @@ function printboard(api, thread){
     api.sendMessage(send, thread);
 }
 
+//adds a letter to the board at the given position if it is a valid placement
 function addLetter(letter, xPos, yPos, api, thread){
     var row = board[2-yPos].split(" ");
-    row[xPos] = letter;
+    if (row[xPos] == "-") row[xPos] = letter;
+    else api.sendMessage("There is already a letter at that position!", thread);
     var new_row = row.join(" ");
     board[2-yPos] = new_row;
+    moveCount++;
+
+    //print the board after making the move
     printboard(api, thread);
+
+    //check for a winner after each move
     var checkwin = checkSolution(api, thread);
     if (checkwin) clear(api, thread);
 }
 
+//resets the board to its original state
 function clear(api, thread){
     for (var i=0; i<3; i++){
         board[i] = "- - -";
     }
+    moveCount = 0;
     api.sendMessage("```\n Board Cleared! \n```", thread);
 }
 
+//checks to see if a player has won the game of tictactoe
 function checkSolution(api, thread){
+
+    //copies the board into a 2d array instead of an array of strings
     var solBoard = new Array(3);
     for (var i = 0; i < 3; i++){
         var tmp = board[i].split(" ");
@@ -134,6 +160,14 @@ function checkSolution(api, thread){
         api.sendMessage(send, thread);
         return true;
     }
+
+    //check for cats game
+    if (moveCount == 9){
+        api.sendMessage("```\nCats game!", thread);
+        clear(api, thread);
+    }
+
+    //no winner yet
     return false;
 }
 
