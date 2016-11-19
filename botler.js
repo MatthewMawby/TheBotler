@@ -11,8 +11,28 @@ function main(){
         api.listen(function callback(err, message){
             var args = message.body.split(' ');
             switch (args[0].toLowerCase()){
+                //lists all botler commands & usage
+                case ".help":
+                    var send = "```\n'.help' : prints this menu\n\n";
+                    send+="-----------------------\n";
+                    send+= "'.about' : An introduction to the bot\n\n";
+                    send+="-----------------------\n";
+                    send+="'.google' : Googles whatever you type following the command\n\n";
+                    send+="-----------------------\n";
+                    send+="'.tictac' : Allows you to play tictactoe\n\n";
+                    send+="  '.tictac -print'\n displays the current state of the board\n\n";
+                    send+="  '.tictac -play X/O Xpos Ypos'\n plays the chosen letter at the given coordinate\n\n";
+                    send+="  ',tictac -clear'\n resets the board\n\n";
+                    send+="-----------------------\n";
+                    send+="'.random min max' : Chooses a random number in the given range\n\n";
+                    send+="-----------------------\n";
+                    send+="'.choose opt1 opt2 ... optn' : randomly chooses an option from the provided arguments";
+                    api.sendMessage(send, message.threadID);
+                    break;
+
+                //introduction to the botler
                 case ".about":
-                    api.sendMessage("Hello, I am a bot.", message.threadID);
+                    api.sendMessage("Hello, I am a bot. Type '.help' for a listing of commands.", message.threadID);
                     break;
 
                 //constructs a let me google that for you link and sends it
