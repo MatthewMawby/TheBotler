@@ -48,40 +48,32 @@ function randInt(min, max){
 }
 
 function tictac(cmd, api, thread){
-    if (cmd[1] == "-print")
-    {
+    if (cmd[1] == "-print"){
         printboard(api, thread);
     }
-    else if (cmd[1] == "-play")
-    {
-        if (cmd[2] == "O" || cmd[2] == "X")
-        {
-            if ((cmd[3] > -1 && cmd[3] < 3) && (cmd[4] > -1 && cmd[4] < 3))
-            {
+    else if (cmd[1] == "-play"){
+        if (cmd[2] == "O" || cmd[2] == "X"){
+            if ((cmd[3] > -1 && cmd[3] < 3) && (cmd[4] > -1 && cmd[4] < 3)){
                 addLetter(cmd[2], cmd[3], cmd[4], api, thread);
             }
-            else
-            {
+            else{
                 api.sendMessage("```\nPlease specify a location thats on the board...", thread);
             }
         }
-        else
-        {
+        else{
             api.sendMessage("```\nThe only valid letters are 'O' and 'X'", thread);
         }
 
     }
 
-    else if (cmd[1] == "-clear")
-    {
+    else if (cmd[1] == "-clear"){
         clear(api, thread);
     }
 }
 
 function printboard(api, thread){
     var send = "``` \n";
-    for (var c = 0; c < board.length; c++)
-    {
+    for (var c = 0; c < board.length; c++){
         send+=board[c];
         if (c==2) continue;
         send+="\n";
@@ -90,52 +82,41 @@ function printboard(api, thread){
     api.sendMessage(send, thread);
 }
 
-function addLetter(letter, xPos, yPos, api, thread)
-{
+function addLetter(letter, xPos, yPos, api, thread){
     var row = board[2-yPos].split(" ");
     row[xPos] = letter;
     var new_row = row.join(" ");
     board[2-yPos] = new_row;
     printboard(api, thread);
     var checkwin = checkSolution(api, thread);
-    if (checkwin)
-    {
-        clear(api, thread);
-    }
+    if (checkwin) clear(api, thread);
 }
 
-function clear(api, thread)
-{
-    for (var i=0; i<3; i++)
-    {
+function clear(api, thread){
+    for (var i=0; i<3; i++){
         board[i] = "- - -";
     }
     api.sendMessage("```\n Board Cleared! \n```", thread);
 }
 
-function checkSolution(api, thread)
-{
+function checkSolution(api, thread){
     var solBoard = new Array(3);
-    for (var i = 0; i < 3; i++)
-    {
+    for (var i = 0; i < 3; i++){
         var tmp = board[i].split(" ");
         solBoard[i] = tmp;
     }
 
     //check rows & columns
-    for (var x = 0; x < solBoard.length; x++)
-    {
+    for (var x = 0; x < solBoard.length; x++){
         //check columns
-        if ((solBoard[0][x] == solBoard[1][x]) && (solBoard[0][x] == solBoard[2][x]) && solBoard[0][x] != "-")
-        {
+        if ((solBoard[0][x] == solBoard[1][x]) && (solBoard[0][x] == solBoard[2][x]) && solBoard[0][x] != "-"){
             var send = "```\nPlayer with character " + solBoard[0][x] + " wins!\n```";
             api.sendMessage(send, thread);
             return true;
         }
 
         //check rows
-        else if ((solBoard[x][0] == solBoard[x][1]) && (solBoard[x][0] == solBoard[x][2]) && solBoard[x][0] != "-")
-        {
+        else if ((solBoard[x][0] == solBoard[x][1]) && (solBoard[x][0] == solBoard[x][2]) && solBoard[x][0] != "-"){
             var send = "```\nPlayer with character " + solBoard[x][0] + " wins!\n```";
             api.sendMessage(send, thread);
             return true;
@@ -143,14 +124,12 @@ function checkSolution(api, thread)
     }
 
     //check diagonals
-    if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]) && (solBoard[1][1]!="-"))
-    {
+    if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]) && (solBoard[1][1]!="-")){
         var send = "```\nPlayer with character " + solBoard[0][0] + " wins!\n```";
         api.sendMessage(send, thread);
         return true;
     }
-    else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]) && (solBoard[1][1]!="-"))
-    {
+    else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]) && (solBoard[1][1]!="-")){
         var send = "```\nPlayer with character " + solBoard[0][2] + " wins!\n```";
         api.sendMessage(send, thread);
         return true;
