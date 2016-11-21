@@ -57,11 +57,8 @@ function main(){
                     //generates a random number within a certain range
                     case ".random":
                         if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
-                        else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))){
-                            api.sendMessage("min and max must be integers", message.threadID);
-                            break;
-                        }
-                        api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
+                        else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
+                        else api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
                         break;
 
                     //chooses a random value from a range of values given by users
