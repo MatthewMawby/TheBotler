@@ -151,7 +151,7 @@ function clear(api, thread){
         board[i] = "- - -";
     }
     moveCount = 0;
-    api.sendMessage("```\n Board Cleared! \n```", thread);
+    api.sendMessage("```\n Board Cleared!", thread);
 }
 
 //checks to see if a player has won the game of tictactoe
@@ -168,14 +168,14 @@ function checkSolution(api, thread){
     for (var x = 0; x < solBoard.length; x++){
         //check columns
         if ((solBoard[0][x] == solBoard[1][x]) && (solBoard[0][x] == solBoard[2][x]) && solBoard[0][x] != "-"){
-            var send = "```\nPlayer with character " + solBoard[0][x] + " wins!\n```";
+            var send = "```\nPlayer with character " + solBoard[0][x] + " wins!";
             api.sendMessage(send, thread);
             return true;
         }
 
         //check rows
         else if ((solBoard[x][0] == solBoard[x][1]) && (solBoard[x][0] == solBoard[x][2]) && solBoard[x][0] != "-"){
-            var send = "```\nPlayer with character " + solBoard[x][0] + " wins!\n```";
+            var send = "```\nPlayer with character " + solBoard[x][0] + " wins!";
             api.sendMessage(send, thread);
             return true;
         }
@@ -183,12 +183,12 @@ function checkSolution(api, thread){
 
     //check diagonals
     if ((solBoard[0][0] == solBoard[1][1]) && (solBoard[0][0] == solBoard[2][2]) && (solBoard[1][1]!="-")){
-        var send = "```\nPlayer with character " + solBoard[0][0] + " wins!\n```";
+        var send = "```\nPlayer with character " + solBoard[0][0] + " wins!";
         api.sendMessage(send, thread);
         return true;
     }
     else if ((solBoard[0][2] == solBoard[1][1]) && (solBoard[0][2] == solBoard[2][0]) && (solBoard[1][1]!="-")){
-        var send = "```\nPlayer with character " + solBoard[0][2] + " wins!\n```";
+        var send = "```\nPlayer with character " + solBoard[0][2] + " wins!";
         api.sendMessage(send, thread);
         return true;
     }
