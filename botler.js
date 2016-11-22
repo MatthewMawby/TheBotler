@@ -10,63 +10,65 @@ function main(){
 
         //begin listening for messages
         api.listen(function callback(err, message){
-            if (typeof message != undefined && typeof message.body != undefined){
-                var args = message.body.split(' ');
-                switch (args[0].toLowerCase()){
-                    //lists all botler commands & usage
-                    case ".help":
-                        var send = "```\n'.help' : prints this menu\n\n";
-                        send+="-----------------------\n";
-                        send+= "'.about' : An introduction to the bot\n\n";
-                        send+="-----------------------\n";
-                        send+="'.google' : Googles whatever you type following the command\n\n";
-                        send+="-----------------------\n";
-                        send+="'.tictac' : Allows you to play tictactoe\n\n";
-                        send+="  '.tictac -print'\n displays the current state of the board\n\n";
-                        send+="  '.tictac -play X/O Xpos Ypos'\n plays the chosen letter at the given coordinate\n\n";
-                        send+="  ',tictac -clear'\n resets the board\n\n";
-                        send+="-----------------------\n";
-                        send+="'.random min max' : Chooses a random number in the given range\n\n";
-                        send+="-----------------------\n";
-                        send+="'.choose opt1 opt2 ... optn' : randomly chooses an option from the provided arguments";
-                        api.sendMessage(send, message.threadID);
-                        break;
+            if (typeof message != undefined){
+                if (typeof message.body != undefined){
+                    var args = message.body.split(' ');
+                    switch (args[0].toLowerCase()){
+                        //lists all botler commands & usage
+                        case ".help":
+                            var send = "```\n'.help' : prints this menu\n\n";
+                            send+="-----------------------\n";
+                            send+= "'.about' : An introduction to the bot\n\n";
+                            send+="-----------------------\n";
+                            send+="'.google' : Googles whatever you type following the command\n\n";
+                            send+="-----------------------\n";
+                            send+="'.tictac' : Allows you to play tictactoe\n\n";
+                            send+="  '.tictac -print'\n displays the current state of the board\n\n";
+                            send+="  '.tictac -play X/O Xpos Ypos'\n plays the chosen letter at the given coordinate\n\n";
+                            send+="  ',tictac -clear'\n resets the board\n\n";
+                            send+="-----------------------\n";
+                            send+="'.random min max' : Chooses a random number in the given range\n\n";
+                            send+="-----------------------\n";
+                            send+="'.choose opt1 opt2 ... optn' : randomly chooses an option from the provided arguments";
+                            api.sendMessage(send, message.threadID);
+                            break;
 
-                    //introduction to the botler
-                    case ".about":
-                        api.sendMessage("Hello, I am a bot. Type '.help' for a listing of commands.", message.threadID);
-                        break;
+                        //introduction to the botler
+                        case ".about":
+                            api.sendMessage("Hello, I am a bot. Type '.help' for a listing of commands.", message.threadID);
+                            break;
 
-                    //constructs a let me google that for you link and sends it
-                    case ".google":
-                        var url = "https://lmgtfy.com/?q=";
-                        if (args.length>1){
-                            url+=args[1];
-                        }
-                        for (var g = 2; g < args.length; g++){
-                            url = url+"+"+args[g];
-                        }
-                        api.sendMessage(url, message.threadID);
-                        break;
+                        //constructs a let me google that for you link and sends it
+                        case ".google":
+                            var url = "https://lmgtfy.com/?q=";
+                            if (args.length>1){
+                                url+=args[1];
+                            }
+                            for (var g = 2; g < args.length; g++){
+                                url = url+"+"+args[g];
+                            }
+                            api.sendMessage(url, message.threadID);
+                            break;
 
-                    //allows users to play tictactoe
-                    case ".tictac":
-                        tictac(args, api, message.threadID, message.senderID);
-                        break;
+                        //allows users to play tictactoe
+                        case ".tictac":
+                            tictac(args, api, message.threadID, message.senderID);
+                            break;
 
-                    //generates a random number within a certain range
-                    case ".random":
-                        if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
-                        else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
-                        else api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
-                        break;
+                        //generates a random number within a certain range
+                        case ".random":
+                            if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
+                            else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
+                            else api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
+                            break;
 
-                    //chooses a random value from a range of values given by users
-                    case ".choose":
-                        if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
-                        var choice = randInt(1, args.length)
-                        api.sendMessage(args[choice], message.threadID);
-                        break;
+                        //chooses a random value from a range of values given by users
+                        case ".choose":
+                            if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
+                            var choice = randInt(1, args.length)
+                            api.sendMessage(args[choice], message.threadID);
+                            break;
+                    }
                 }
             }
         });
