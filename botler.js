@@ -65,7 +65,7 @@ function main(){
                         //chooses a random value from a range of values given by users
                         case ".choose":
                             if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
-                            var choice = randInt(1, args.length)
+                            var choice = randInt(1, args.length-1)
                             api.sendMessage(args[choice], message.threadID);
                             break;
                     }
