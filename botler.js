@@ -10,7 +10,7 @@ function main(){
 
         //begin listening for messages
         api.listen(function callback(err, message){
-            if (message.type == 'message')
+            if (typeof message != 'undefined' && message.type == 'message')
             {
                 var args = message.body.split(' ');
                 switch (args[0].toLowerCase()){
