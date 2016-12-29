@@ -15,7 +15,7 @@ function main(){
                 var args = message.body.split(' ');
                 switch (args[0].toLowerCase()){
                     //lists all botler commands & usage
-                    case ".help":
+                    case "!help":
                         var send = "```\n'.help' : prints this menu\n\n";
                         send+="-----------------------\n";
                         send+= "'.about' : An introduction to the bot\n\n";
@@ -34,12 +34,12 @@ function main(){
                         break;
 
                     //introduction to the botler
-                    case ".about":
+                    case "!about":
                         api.sendMessage("Hello, I am a bot. Type '.help' for a listing of commands.", message.threadID);
                         break;
 
                     //constructs a let me google that for you link and sends it
-                    case ".google":
+                    case "!google":
                         var url = "https://lmgtfy.com/?q=";
                         if (args.length>1){
                             url+=args[1];
@@ -51,19 +51,19 @@ function main(){
                         break;
 
                     //allows users to play tictactoe
-                    case ".tictac":
+                    case "!tictac":
                         tictac(args, api, message.threadID, message.senderID);
                         break;
 
                     //generates a random number within a certain range
-                    case ".random":
+                    case "!random":
                         if (args.length < 3) api.sendMessage("USAGE: '.random min max'", message.threadID);
                         else if (!Number.isInteger(parseInt(args[1])) || !Number.isInteger(parseInt(args[2]))) api.sendMessage("min and max must be integers", message.threadID);
                         else api.sendMessage(randInt(parseInt(args[1]), parseInt(args[2])).toString(), message.threadID);
                         break;
 
                         //chooses a random value from a range of values given by users
-                    case ".choose":
+                    case "!choose":
                         if (args.length == 1) api.sendMessage("You didn't give me anything to choose from!", message.threadID);
                         var choice = randInt(1, args.length-1)
                         api.sendMessage(args[choice], message.threadID);
